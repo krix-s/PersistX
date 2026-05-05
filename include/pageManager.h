@@ -7,6 +7,7 @@
 class Storage{
     private:
         vector<Page> pages;
+        int NxtPageID = 0;
     public:
         void insert(string key, string value);
         string search(string key);

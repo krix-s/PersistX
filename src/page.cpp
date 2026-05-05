@@ -53,3 +53,11 @@ vector<Record> Page ::getRecords(){
 }
 //replacing display with get records just so that instead of printing records it makes records visible to storage for later displaying.
 
+
+void Page:: setID(int id){
+    ID = id;
+}
+
+int Page:: getID(){ // here ID should be set only once by storage/page manager --- note to self: update to use constructer so that id is set on obj creation.
+    return ID;
+}

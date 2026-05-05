@@ -13,12 +13,15 @@ class Page{
         vector<Record> records;
         int current_size = 0;
         static const int MAX_SIZE = 4096;
+        int ID;
 
     public:
         bool insert(Record r);
         pair<bool,string> search(string key);
         void remove(string key);
         vector<Record> getRecords();
+        void setID(int id);
+        int getID();
 };
 
 #endif

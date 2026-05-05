@@ -1,9 +1,31 @@
-#include "storage.h"
 #include <iostream>
+#include "pageManager.h"
+
 using namespace std;
 
-int main(){
+int main() {
     Storage db;
+
+    // Insertin enough records to force multiple pages
+    for (int i = 0; i < 100; i++) {
+        string key = to_string(i);
+        string value(100, 'a' + (i % 26));  // 100-char string
+
+        db.insert(key, value);
+    }
+
+
+    
+    db.display();
+
+    
+    cout << "Search 10: " << db.search("10") << endl;
+    cout << "Search 999: " << db.search("999") << endl;
+
+    
+    db.remove("10");
+    
+    cout << "Search 10: " << db.search("10") << endl;
 
     db.insert("1", "tom");
     db.insert("2", "horse");
@@ -20,6 +42,8 @@ int main(){
     cout << endl;
 
     return 0;
+
+
 
 }
 
