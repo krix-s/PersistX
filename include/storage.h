@@ -2,11 +2,11 @@
 #define STORAGE_H
 
 #include <vector>
-#include "record.h"
+#include "page.h"
 
 class Storage{
     private:
-        vector<Record> records;
+        vector<Page> pages;
     public:
         void insert(string key, string value);
         string search(string key);

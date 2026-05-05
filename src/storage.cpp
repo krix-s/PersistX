@@ -1,34 +1,52 @@
 #include "storage.h"
+#include "page.h"
 #include <iostream>
 using namespace std;
 //all functions must be of the specific class in header file hence ::
 void Storage::insert(string key, string value){
-    records.push_back({key,value});
+    Record r{key,value}; //instead of page, storage creates record and passes it down to page to insert
+    if(pages.empty()){
+        Page newPage;
+        newPage.insert(r);
+        pages.push_back(newPage);
+    }
+    else{
+        if(pages.back().insert(r)){}
+        else{
+            Page newPage;
+            newPage.insert(r);
+            pages.push_back(newPage); 
+        }
+    }
+
+        
 }
+   
+
 
 string Storage::search(string key){
-    for (auto &r : records){
-        if (r.key == key){
-            return r.value;
+    for(auto &p : pages){
+        auto result = p.search(key);
+        if (result.first){
+            return result.second;
         }
+        
     }
     return "NOT FOUND";
 }
+
 //erase invalides iterator hence range based loop doesnt work.
 void Storage::remove(string key){
-    for (auto it = records.begin(); it != records.end();){
-    
-        if(it->key == key){
-            it = records.erase(it); //erase returns iterator of next element in vector.
-        }
-        else{
-            it++;
-        }
+    for(auto &p : pages){
+        p.remove(key);
+        break;
     }
 }
 
 void Storage:: display(){
-    for (const auto &r : records){
-        cout << r.key <<":"<< r.value << " ";
+    for (auto &p : pages){
+        for( auto &d : p.getRecords()){
+            cout << "(key:" << d.key << " value:" << d.value << ")";  
+        }
     }
 }

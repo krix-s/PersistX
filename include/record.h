@@ -7,6 +7,9 @@ using namespace std;
 struct Record { 
     string key;
     string value;
+ 
+    int recSize();
+    
 };
 
 #endif
