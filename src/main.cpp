@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    Storage db;
+    PageManager db;
 
     // Insertin enough records to force multiple pages
     for (int i = 0; i < 100; i++) {

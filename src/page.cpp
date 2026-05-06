@@ -43,7 +43,7 @@ void Page::remove(string key){
     }
 }
 
-vector<Record> Page ::getRecords(){
+vector<Record> Page ::getRecords() const{
     vector<Record> r2;
     for(const auto &r: records){
         r2.push_back(r);
@@ -58,6 +58,6 @@ void Page:: setID(int id){
     ID = id;
 }
 
-int Page:: getID(){ // here ID should be set only once by storage/page manager --- note to self: update to use constructer so that id is set on obj creation.
+int Page:: getID()const{ // here ID should be set only once by storage/page manager --- note to self: update to use constructer so that id is set on obj creation.
     return ID;
 }

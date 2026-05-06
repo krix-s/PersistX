@@ -2,9 +2,9 @@
 #define STORAGE_H
 
 #include <vector>
-#include "page.h"
+#include "diskManager.h"
 
-class Storage{
+class PageManager{
     private:
         vector<Page> pages;
         int NxtPageID = 0;

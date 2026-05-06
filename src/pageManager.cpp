@@ -3,7 +3,9 @@
 #include <iostream>
 using namespace std;
 //all functions must be of the specific class in header file hence ::
-void Storage::insert(string key, string value){
+void PageManager::insert(string key, string value){
+
+    DiskManager dm;
     Record r{key,value}; //instead of page, storage creates record and passes it down to page to insert
     if(pages.empty()){
         Page newPage;
@@ -12,14 +14,21 @@ void Storage::insert(string key, string value){
         NxtPageID ++;
         newPage.insert(r);
         pages.push_back(newPage);
+        dm.writePage(newPage);
     }
     else{
-        if(!pages.back().insert(r)){
+        Page &p = pages.back();
+        if(!p.insert(r)){
+            
             Page newPage;
             newPage.setID(NxtPageID);
-            NxtPageID +=1;
+            NxtPageID ++;
             newPage.insert(r);
-            pages.push_back(newPage); 
+            pages.push_back(newPage);
+            dm.writePage(newPage);
+        }
+        else{
+            dm.writePage(p);
         }
     }
 
@@ -28,7 +37,7 @@ void Storage::insert(string key, string value){
    
 
 
-string Storage::search(string key){
+string PageManager::search(string key){
     for(auto &p : pages){
         auto result = p.search(key);
         if (result.first){
@@ -40,14 +49,14 @@ string Storage::search(string key){
 }
 
 //erase invalides iterator hence range based loop doesnt work.
-void Storage::remove(string key){
+void PageManager::remove(string key){
     for(auto &p : pages){
         p.remove(key);
         break;
     }
 }
 
-void Storage:: display(){
+void PageManager:: display(){
     for (auto &p : pages){
         for( auto &d : p.getRecords()){
             cout << p.getID() << endl;  //comment this line later - only for testing pageManager.
