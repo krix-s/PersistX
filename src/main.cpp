@@ -1,10 +1,10 @@
 #include <iostream>
-#include "pageManager.h"
+#include "bufferPoolManager.h"
 
 using namespace std;
 
 int main() {
-    PageManager db;
+    BufferPoolManager db;
 
     // Insertin enough records to force multiple pages
     for (int i = 0; i < 100; i++) {

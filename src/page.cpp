@@ -25,22 +25,20 @@ pair<bool,string> Page::search(string key){
     return {false,""};
 }
 
-void Page::remove(string key){
+bool Page::remove(string key){
     for (auto it = records.begin(); it != records.end();){
     
         if(it->key == key){
-            for(auto &r : records){
-                    current_size -= r.recSize();
-                
-            }
+            current_size -= it->recSize();
                         
             it = records.erase(it); //erase returns iterator of next element in vector
-            
+            return true;
         }
         else{
             it++;
         }
     }
+    return false;
 }
 
 vector<Record> Page ::getRecords() const{

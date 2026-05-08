@@ -18,7 +18,7 @@ class Page{
     public:
         bool insert(Record r);
         pair<bool,string> search(string key);
-        void remove(string key);
+        bool remove(string key);
         vector<Record> getRecords() const;
         void setID(int id);
         int getID() const;
