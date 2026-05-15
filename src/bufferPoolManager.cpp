@@ -69,80 +69,31 @@ must evict (5,1)*/
 
 
 
-void BufferPoolManager::insert(string key, string value){
 
-    
-    Record r{key,value}; 
 
-    if(totalPages == 0){
-        Page newPage;
-    
-        newPage.setID(0);
-    
-        newPage.insert(r);
-        BufferFrame frame;
-        frame.page = newPage;
-        currentTime++;
-        frame.timestamp = currentTime;
-        frame.dirty = true;
-        bufferPool[0] = frame;
-        minHeap.push({currentTime,0});
-        totalPages++ ;  
-    }
-    else{//totalpages-1 = lastpage id
-        Page &p = getPage(totalPages-1);
-        if(p.insert(r)){
-            bufferPool[totalPages-1].dirty = true;
-        }
-        else{
-            //new pageid == total pages
-            Page newPage;
-            newPage.setID(totalPages);
-            newPage.insert(r);
-            BufferFrame frame;
-            frame.page = newPage;
-            currentTime++;
-            frame.timestamp = currentTime;
-            frame.dirty = true;
-            bufferPool[totalPages] = frame;
-            minHeap.push({currentTime,totalPages});
-            totalPages++ ;            
-        }
-    }
-    
-    
+int BufferPoolManager::getTotalPage(){
+    return totalPages;
 }
-
-string BufferPoolManager::search(string key){
-    for(int i = 0; i < totalPages; i++){
-        Page &p = getPage(i);
-        auto result = p.search(key);
-
-        if (result.first){
-            return result.second;
-        }
-        
-    }
-    return "NOT FOUND";
-}
-
-//erase invalides iterator hence range based loop doesnt work.
-void BufferPoolManager::remove(string key){
-    for(int i = 0; i < totalPages; i++){
-        Page &p = getPage(i);
-        if(p.remove(key)){
-            bufferPool[i].dirty = true;
-            return;
-        }
+void BufferPoolManager::markDirty(int page_id){
+    auto it = bufferPool.find(page_id);
+    if(it != bufferPool.end()){
+        it->second.dirty = true;
     }
 }
-
-void BufferPoolManager:: display(){
-    for(int i = 0; i < totalPages; i++){
-        Page &p = getPage(i);
-        for( auto &d : p.getRecords()){
-            cout << p.getID() << endl;  //comment this line later - only for testing pageManager.
-            cout << "(key:" << d.key << " value:" << d.value << ")";  
-        }
+void BufferPoolManager::cachePage(Page page){
+    if(bufferPool.size() >= MAX_BUFFER_SIZE){
+        evictPage();
     }
+    BufferFrame frame;
+    frame.page = page;
+    frame.dirty = false;
+    currentTime++;
+    frame.timestamp = currentTime;
+    bufferPool[page.getID()] = frame;
+    minHeap.push({currentTime, page.getID()});
 }
+
+void BufferPoolManager ::incrementTotalPages(){
+    totalPages++;
+}
+

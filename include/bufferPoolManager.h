@@ -35,10 +35,10 @@ class BufferPoolManager{
     void evictPage();
     public:
     Page& getPage(int page_id);
-    void insert(string key, string value);
-    string search(string key);
-    void remove(string key);
-    void display();
+    int getTotalPage();
+    void markDirty(int page_id);
+    void cachePage(Page page);
+    void incrementTotalPages();
 
 };
 

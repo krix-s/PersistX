@@ -1,10 +1,10 @@
 #include <iostream>
-#include "bufferPoolManager.h"
+#include "queryEngine.h"
 
 using namespace std;
 
 int main() {
-    BufferPoolManager db;
+    queryEngine db;
 
     // Insertin enough records to force multiple pages
     for (int i = 0; i < 100; i++) {
@@ -41,7 +41,17 @@ int main() {
     db.display();
     cout << endl;
 
+    db.insert("apple", "fruit");
+    db.insert("apricot", "fruit");
+
+    auto results = db.prefixSearch("ap");
+    for (const auto &r : results) {
+        cout << "(key:" << r.key << " value:" << r.value << ")" << endl;
+    }
+
     return 0;
+
+
 
 
 
