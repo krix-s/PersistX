@@ -3,15 +3,19 @@
 
 #include "bufferPoolManager.h"
 #include <iostream>
+#include <map>
 class queryEngine{
     private:
     BufferPoolManager bpm;
+    map<string,int> index;
     
     public:
+    void buildIndex();
     void insert(string key, string value);
     string search(string key);
     void remove(string key);
     void display();
     vector<Record> prefixSearch(string prefix);
+    vector<Record> rangeQuery(string st, string end);
 };
 #endif
