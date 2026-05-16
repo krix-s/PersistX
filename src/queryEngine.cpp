@@ -12,6 +12,7 @@ void queryEngine::buildIndex(){
 }
 
 void queryEngine::insert(string key, string value){
+    wal.logInsert(key, value);
 
     
     Record r{key,value}; 
@@ -56,6 +57,7 @@ string queryEngine::search(string key){
 }
 
 void queryEngine::remove(string key){
+    wal.logRemove(key);
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
         if(p.remove(key)){

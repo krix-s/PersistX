@@ -1,5 +1,7 @@
 #include "diskManager.h"
+//#include "iostream"
 bool DiskManager::writePage(const Page &p){
+    //cout << "writing page";
     string filename = "data/page_" + to_string(p.getID()) + ".txt";
     ofstream file (filename);
     if(!file){

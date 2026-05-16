@@ -2,12 +2,14 @@
 #define QUERY_ENGINE_H
 
 #include "bufferPoolManager.h"
+#include "walManager.h"
 #include <iostream>
 #include <map>
 class queryEngine{
     private:
     BufferPoolManager bpm;
     map<string,int> index;
+    WalManager wal;
     
     public:
     void buildIndex();

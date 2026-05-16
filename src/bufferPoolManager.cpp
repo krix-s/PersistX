@@ -6,6 +6,7 @@ using namespace std;
 
 
 void BufferPoolManager::evictPage(){
+    //cout << "evicting page"; //debugging
     while(!minHeap.empty()){
         auto oldest = minHeap.top();
         minHeap.pop();
@@ -21,9 +22,10 @@ void BufferPoolManager::evictPage(){
 
         if(it->second.dirty){//but if the page is dirty, then we must write to os and ONLY then erase from bufferpool or else we will loose that data forever
             dm.writePage(it->second.page);
-            return;
+           
         }
         bufferPool.erase(id);
+        return;
     }
 
 }
