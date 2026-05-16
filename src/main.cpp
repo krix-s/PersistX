@@ -5,6 +5,8 @@ using namespace std;
 
 int main() {
     queryEngine db;
+    WalManager wal;
+    wal.recover(db);
 
     // Insertin enough records to force multiple pages
     for (int i = 0; i < 100; i++) {

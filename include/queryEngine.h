@@ -19,5 +19,6 @@ class queryEngine{
     void display();
     vector<Record> prefixSearch(string prefix);
     vector<Record> rangeQuery(string st, string end);
+    bool recovering = false;
 };
 #endif

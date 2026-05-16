@@ -1,5 +1,6 @@
 #include "queryEngine.h"
 
+
 void queryEngine::buildIndex(){
     index.clear();
     for(int i = 0; i < bpm.getTotalPage(); i++){
@@ -12,7 +13,10 @@ void queryEngine::buildIndex(){
 }
 
 void queryEngine::insert(string key, string value){
-    wal.logInsert(key, value);
+    if(!recovering){
+        wal.logInsert(key, value);
+    }
+    
 
     
     Record r{key,value}; 
@@ -57,7 +61,9 @@ string queryEngine::search(string key){
 }
 
 void queryEngine::remove(string key){
-    wal.logRemove(key);
+    if(!recovering){
+        wal.logRemove(key);
+    }
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
         if(p.remove(key)){
