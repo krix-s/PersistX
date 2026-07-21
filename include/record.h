@@ -8,7 +8,7 @@ struct Record {
     string key;
     string value;
  
-    int recSize();
+    int recSize() const;
     
 };
 

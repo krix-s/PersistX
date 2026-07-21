@@ -1,6 +1,6 @@
 #include"record.h"
 
-int Record ::recSize(){
+int Record ::recSize()const{
 
     return key.length() + value.length();
 

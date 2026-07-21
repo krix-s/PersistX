@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-bool Page::insert(Record r){
+bool Page::insert(const Record &r){
 
     if(current_size  + r.recSize() <= MAX_SIZE){
         records.push_back({r.key,r.value});
@@ -16,7 +16,7 @@ bool Page::insert(Record r){
     
 }
 
-pair<bool,string> Page::search(string key){
+pair<bool,string> Page::search(string& key){
     for (auto &r : records){
         if (r.key == key){
             return {true,r.value};
@@ -25,13 +25,14 @@ pair<bool,string> Page::search(string key){
     return {false,""};
 }
 
-bool Page::remove(string key){
+bool Page::remove(string& key){
     for (auto it = records.begin(); it != records.end();){
     
         if(it->key == key){
             current_size -= it->recSize();
                         
-            it = records.erase(it); //erase returns iterator of next element in vector
+            it = records.erase(it);
+            //erase returns iterator of next element in vector
             return true;
         }
         else{
@@ -41,21 +42,17 @@ bool Page::remove(string key){
     return false;
 }
 
-vector<Record> Page ::getRecords() const{
-    vector<Record> r2;
-    for(const auto &r: records){
-        r2.push_back(r);
-    }
-
-    return r2;
+const vector<Record> &Page ::getRecords() const{
+    return this->records;
 }
-//replacing display with get records just so that instead of printing records it makes records visible to storage for later displaying.
+
 
 
 void Page:: setID(int id){
     ID = id;
 }
 
-int Page:: getID()const{ // here ID should be set only once by storage/page manager --- note to self: update to use constructer so that id is set on obj creation.
+int Page:: getID()const{ 
+    // TODO: initialise page_id through a constructor instead of a setter
     return ID;
 }

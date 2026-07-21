@@ -16,10 +16,10 @@ class Page{
         int ID;
 
     public:
-        bool insert(Record r);
-        pair<bool,string> search(string key);
-        bool remove(string key);
-        vector<Record> getRecords() const;
+        bool insert(const Record &r);
+        pair<bool,string> search(string &key);
+        bool remove(string &key);
+        const vector<Record> &getRecords() const;
         void setID(int id);
         int getID() const;
 };
