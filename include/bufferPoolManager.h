@@ -11,11 +11,18 @@
 
 using namespace std;
 
-struct BufferFrame{ //to contain metadata
+struct BufferFrame{
+    //to contain metadata
     Page page;
     int timestamp;   
     bool dirty;
 
+    BufferFrame(const Page& p,int ts, bool d)
+        :page(p), timestamp(ts), dirty(d)
+    {}
+    //members are constructed before the constructor body runs
+    //Since Page has no default constructor, we initialize it directly here
+    //using member initializer lists
 
 };
 
@@ -37,7 +44,7 @@ class BufferPoolManager{
     Page& getPage(int page_id);
     int getTotalPage();
     void markDirty(int page_id);
-    void cachePage(Page page);
+    void cachePage(const Page& page);
     void incrementTotalPages();
 
 };

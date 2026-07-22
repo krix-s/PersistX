@@ -2,12 +2,12 @@
 #define WAL_MANAGER_H
 #include <string>
 using namespace std;
-class queryEngine;
+class QueryEngine;
 class WalManager{
     public:
     void logInsert(string key, string value);
     void logRemove(string key);
-    void recover(queryEngine &db);
+    void recover(QueryEngine &db);
 };
 #endif
 

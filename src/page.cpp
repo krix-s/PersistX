@@ -16,7 +16,7 @@ bool Page::insert(const Record &r){
     
 }
 
-pair<bool,string> Page::search(string& key){
+pair<bool,string> Page::search(const string& key){
     for (auto &r : records){
         if (r.key == key){
             return {true,r.value};
@@ -48,11 +48,10 @@ const vector<Record> &Page ::getRecords() const{
 
 
 
-void Page:: setID(int id){
+Page:: Page(int id){
     ID = id;
 }
 
 int Page:: getID()const{ 
-    // TODO: initialise page_id through a constructor instead of a setter
     return ID;
 }

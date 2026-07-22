@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    queryEngine db;
+    QueryEngine db;
     WalManager wal;
     wal.recover(db);
 

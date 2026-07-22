@@ -15,7 +15,7 @@ void WalManager :: logRemove(string key){
     fout.close();
 }
 
-void WalManager:: recover(queryEngine &db){
+void WalManager:: recover(QueryEngine &db){
     ifstream f("data/wal.log");
     if(!f.is_open()){
         return;

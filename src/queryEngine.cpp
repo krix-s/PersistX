@@ -1,7 +1,7 @@
 #include "queryEngine.h"
 
 
-void queryEngine::buildIndex(){
+void QueryEngine::buildIndex(){
     index.clear();
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
@@ -12,7 +12,7 @@ void queryEngine::buildIndex(){
     }
 }
 
-void queryEngine::insert(string key, string value){
+void QueryEngine::insert(string key, string value){
     if(!recovering){
         wal.logInsert(key, value);
     }
@@ -22,9 +22,7 @@ void queryEngine::insert(string key, string value){
     Record r{key,value}; 
 
     if(bpm.getTotalPage() == 0){
-        Page newPage;
-    
-        newPage.setID(0);
+        Page newPage(0);
     
         newPage.insert(r);
         bpm.cachePage(newPage);
@@ -37,9 +35,7 @@ void queryEngine::insert(string key, string value){
             bpm.markDirty(bpm.getTotalPage()-1);
         }
         else{
-            //new pageid == total pages
-            Page newPage;
-            newPage.setID(bpm.getTotalPage());
+            Page newPage(bpm.getTotalPage());
             newPage.insert(r);
             bpm.cachePage(newPage);
             bpm.incrementTotalPages();           
@@ -49,7 +45,7 @@ void queryEngine::insert(string key, string value){
     buildIndex();
 }
 
-string queryEngine::search(string key){
+string QueryEngine::search(const string &key){
     auto iter = index.find(key);
     if(iter == index.end()){
         return "NOT FOUND!";
@@ -60,7 +56,7 @@ string queryEngine::search(string key){
     return p.search(key).second;
 }
 
-void queryEngine::remove(string key){
+void QueryEngine::remove(string key){
     if(!recovering){
         wal.logRemove(key);
     }
@@ -74,7 +70,7 @@ void queryEngine::remove(string key){
     buildIndex();
 }
 
-void queryEngine::display(){
+void QueryEngine::display(){
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
         for( auto &d : p.getRecords()){
@@ -84,7 +80,7 @@ void queryEngine::display(){
     }
 }
 
-vector<Record> queryEngine::prefixSearch(string prefix){
+vector<Record> QueryEngine::prefixSearch(string prefix){
     vector<Record> result;
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
@@ -97,7 +93,7 @@ vector<Record> queryEngine::prefixSearch(string prefix){
     return result;
 }
 
-vector <Record> queryEngine::rangeQuery(string st, string end){
+vector <Record> QueryEngine::rangeQuery(string st, string end){
     vector<Record> result;
     auto start = index.lower_bound(st);
     auto stop = index.upper_bound(end);

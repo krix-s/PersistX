@@ -1,7 +1,7 @@
 #include "diskManager.h"
-//#include "iostream"
+
 bool DiskManager::writePage(const Page &p){
-    //cout << "writing page";
+
     string filename = "data/page_" + to_string(p.getID()) + ".txt";
     ofstream file (filename);
     if(!file){
@@ -19,12 +19,10 @@ pair<bool,Page> DiskManager::readPage(int page_id){
     string filename = "data/page_" + to_string(page_id) + ".txt";
     ifstream file (filename);
     if(!file){
-        Page p; //empty page for returning if file missing
-        p.setID(page_id);
+        Page p(page_id); 
         return{false,p};
     }
-    Page p;
-    p.setID(page_id);
+    Page p(page_id);
     string line;
     while(getline(file,line)){
         int delimiterPosition = line.find("|");

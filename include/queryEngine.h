@@ -5,7 +5,7 @@
 #include "walManager.h"
 #include <iostream>
 #include <map>
-class queryEngine{
+class QueryEngine{
     private:
     BufferPoolManager bpm;
     map<string,int> index;
@@ -14,7 +14,7 @@ class queryEngine{
     public:
     void buildIndex();
     void insert(string key, string value);
-    string search(string key);
+    string search(const string& key);
     void remove(string key);
     void display();
     vector<Record> prefixSearch(string prefix);
