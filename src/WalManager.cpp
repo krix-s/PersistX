@@ -15,7 +15,7 @@ void WalManager :: logRemove(string key){
     fout.close();
 }
 
-void WalManager:: recover(queryEngine &db){
+void WalManager:: recover(QueryEngine &db){
     ifstream f("data/wal.log");
     if(!f.is_open()){
         return;
@@ -41,7 +41,7 @@ void WalManager:: recover(queryEngine &db){
             db.remove(key);
         }
     }
-    db.recovering == false;
+    db.recovering = false;
     f.close();
     ofstream clearfile("data/wal.log", ios::trunc);
     clearfile.close();

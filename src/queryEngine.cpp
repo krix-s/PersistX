@@ -1,7 +1,11 @@
 #include "queryEngine.h"
+#include <iostream>
 
-
-void queryEngine::buildIndex(){
+QueryEngine::QueryEngine() {
+    wal.recover(*this);
+    buildIndex();
+}
+void QueryEngine::buildIndex(){
     index.clear();
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
@@ -12,7 +16,7 @@ void queryEngine::buildIndex(){
     }
 }
 
-void queryEngine::insert(string key, string value){
+void QueryEngine::insert(string key, string value){
     if(!recovering){
         wal.logInsert(key, value);
     }
@@ -22,9 +26,7 @@ void queryEngine::insert(string key, string value){
     Record r{key,value}; 
 
     if(bpm.getTotalPage() == 0){
-        Page newPage;
-    
-        newPage.setID(0);
+        Page newPage(0);
     
         newPage.insert(r);
         bpm.cachePage(newPage);
@@ -37,9 +39,7 @@ void queryEngine::insert(string key, string value){
             bpm.markDirty(bpm.getTotalPage()-1);
         }
         else{
-            //new pageid == total pages
-            Page newPage;
-            newPage.setID(bpm.getTotalPage());
+            Page newPage(bpm.getTotalPage());
             newPage.insert(r);
             bpm.cachePage(newPage);
             bpm.incrementTotalPages();           
@@ -49,7 +49,7 @@ void queryEngine::insert(string key, string value){
     buildIndex();
 }
 
-string queryEngine::search(string key){
+string QueryEngine::search(const string &key){
     auto iter = index.find(key);
     if(iter == index.end()){
         return "NOT FOUND!";
@@ -60,31 +60,41 @@ string queryEngine::search(string key){
     return p.search(key).second;
 }
 
-void queryEngine::remove(string key){
+void QueryEngine::remove(const string &key){
     if(!recovering){
         wal.logRemove(key);
     }
-    for(int i = 0; i < bpm.getTotalPage(); i++){
-        Page &p = bpm.getPage(i);
-        if(p.remove(key)){
-            bpm.markDirty(i);
-            return;
-        }
-    }
-    buildIndex();
-}
 
-void queryEngine::display(){
-    for(int i = 0; i < bpm.getTotalPage(); i++){
-        Page &p = bpm.getPage(i);
-        for( auto &d : p.getRecords()){
-            cout << p.getID() << endl;  //comment this line later - only for testing pageManager.
-            cout << "(key:" << d.key << " value:" << d.value << ")";  
-        }
+    auto it = index.find(key);
+
+    if(it == index.end()){
+        return;
+    }
+
+    int page_id = it->second;
+
+    Page &p = bpm.getPage(page_id);
+
+    if(p.remove(key)){
+        bpm.markDirty(page_id);
+        index.erase(it);
     }
 }
 
-vector<Record> queryEngine::prefixSearch(string prefix){
+void QueryEngine::display() {
+    for (int i = 0; i < bpm.getTotalPage(); i++) {
+        Page &p = bpm.getPage(i);
+
+        cout << "[Page " << p.getID() << "]\n";
+
+        for (const auto &record : p.getRecords()) {
+            cout << "  " << record.key
+                 << " = " << record.value << "\n";
+        }
+    }
+}
+
+vector<Record> QueryEngine::prefixSearch(string prefix){
     vector<Record> result;
     for(int i = 0; i < bpm.getTotalPage(); i++){
         Page &p = bpm.getPage(i);
@@ -97,7 +107,7 @@ vector<Record> queryEngine::prefixSearch(string prefix){
     return result;
 }
 
-vector <Record> queryEngine::rangeQuery(string st, string end){
+vector <Record> QueryEngine::rangeQuery(string st, string end){
     vector<Record> result;
     auto start = index.lower_bound(st);
     auto stop = index.upper_bound(end);
