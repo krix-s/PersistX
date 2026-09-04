@@ -72,7 +72,7 @@ void BufferPoolManager::cachePage(const Page& page){
         evictPage();
     }
     currentTime++;
-    BufferFrame frame(page,currentTime,false);
+    BufferFrame frame(page,currentTime,true);
 
     //use insert() instead of operator[] because BufferFrame has
     //no default constructor. Operator [] would try to

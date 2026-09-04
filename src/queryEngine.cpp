@@ -1,6 +1,10 @@
 #include "queryEngine.h"
+#include <iostream>
 
-
+QueryEngine::QueryEngine() {
+    wal.recover(*this);
+    buildIndex();
+}
 void QueryEngine::buildIndex(){
     index.clear();
     for(int i = 0; i < bpm.getTotalPage(); i++){
@@ -56,26 +60,36 @@ string QueryEngine::search(const string &key){
     return p.search(key).second;
 }
 
-void QueryEngine::remove(string key){
+void QueryEngine::remove(const string &key){
     if(!recovering){
         wal.logRemove(key);
     }
-    for(int i = 0; i < bpm.getTotalPage(); i++){
-        Page &p = bpm.getPage(i);
-        if(p.remove(key)){
-            bpm.markDirty(i);
-            return;
-        }
+
+    auto it = index.find(key);
+
+    if(it == index.end()){
+        return;
     }
-    buildIndex();
+
+    int page_id = it->second;
+
+    Page &p = bpm.getPage(page_id);
+
+    if(p.remove(key)){
+        bpm.markDirty(page_id);
+        index.erase(it);
+    }
 }
 
-void QueryEngine::display(){
-    for(int i = 0; i < bpm.getTotalPage(); i++){
+void QueryEngine::display() {
+    for (int i = 0; i < bpm.getTotalPage(); i++) {
         Page &p = bpm.getPage(i);
-        for( auto &d : p.getRecords()){
-            cout << p.getID() << endl;  //comment this line later - only for testing pageManager.
-            cout << "(key:" << d.key << " value:" << d.value << ")";  
+
+        cout << "[Page " << p.getID() << "]\n";
+
+        for (const auto &record : p.getRecords()) {
+            cout << "  " << record.key
+                 << " = " << record.value << "\n";
         }
     }
 }

@@ -25,7 +25,7 @@ pair<bool,string> Page::search(const string& key){
     return {false,""};
 }
 
-bool Page::remove(string& key){
+bool Page::remove(const string& key){
     for (auto it = records.begin(); it != records.end();){
     
         if(it->key == key){
