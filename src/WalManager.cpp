@@ -41,7 +41,7 @@ void WalManager:: recover(QueryEngine &db){
             db.remove(key);
         }
     }
-    db.recovering == false;
+    db.recovering = false;
     f.close();
     ofstream clearfile("data/wal.log", ios::trunc);
     clearfile.close();
